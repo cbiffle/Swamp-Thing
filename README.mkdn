@@ -1,0 +1,53 @@
+Swamp Thing
+===========
+
+This is a simple laser-cut swamp cooler design.  It's written in OpenSCAD, a
+parametric text-based modeling program.
+
+There are a bunch of parameters near the top that you may need to tweak for your
+environment.  In particular, make sure the `wood_thickness` and 
+`plastic_thickness` are set for your materials, and adjust the `pad` parameters
+to reflect your evaporative pad.
+
+The default design is set up for a 4" ducted fan and a 4" output duct.
+To change duct size, edit the `duct_diameter` parameter.  To use a different
+fan, customize the `fan_panel_4in` modules to reflect your fan.
+
+
+Assembly Instructions
+---------------------
+
+You will need:
+
+ 1. All the panels in the `wood_cutting_layout` and `plastic_cutting_layout`
+    modules.
+ 2. Silicone sealant.
+ 3. Your fan.
+ 4. Your cooling pad.
+ 5. A small bilge pump.
+ 6. Enough PVC pipe to span the top of the cooling pad.
+ 7. Hose and fittings to adapt the PVC pipe to your bilge pump.
+
+To assemble:
+
+ 1. Locate the longitudinal cross braces.
+ 2. Slot them into the side panels.  They slide into the slots near the bottom
+    and lock down.  Make sure the top cutouts align.
+ 3. Locate the lateral cross braces.
+ 4. Slot them into the longitudinal cross braces to form a hash-sign.
+ 5. Slot the front and back panels into place.  There are several cutouts at the
+    top of the side panels; the front panel goes nearest the cutouts.
+ 6. Drop the reservoir floor into place.  It should nest quite snugly.
+ 7. Fit the reservoir walls in.  They should hold in place by friction.
+ 8. Seal all reservoir seams using silicone sealant.  Allow this to cure.
+ 9. Mount your pad to the pad hangers, using e.g. zip ties.  These are the
+    plastic pieces that look like the front panel.
+ 10. Slot the pad assembly into place.  It mates with slots on top of the side
+     panels.  Seal the bottom seams if desired.
+ 11. Mount your fan to the fan supports.  If using the default 4" ducted fan,
+     it should fit by friction.  Put a hose clamp between the two supports to
+     keep it from sliding out.
+ 12. Slide the fan assembly into place.  It mates with slots on the top of the
+     side panels.
+ 13. Place the rear lid panel in place.  Seal.
+ 14. Place the front lid panel in place.  Hinge if desired.
