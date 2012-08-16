@@ -310,6 +310,41 @@ module mock_fan_panel_4in() {
 
 
 /*******************************************************************************
+ * 120mm computer fan configuration
+ */
+
+module fan_120mm_template() {
+  circle(r = mm(120) / 2);
+
+  for (x = [-1, 1]) {
+    for (y = [-1, 1]) {
+      translate([x * mm(106)/2, y * mm(106)/2]) circle(r = mm(4) / 2);
+    }
+  }
+}
+
+module fan_panel_120mm() {
+  difference() {
+    interior_lateral_panel();
+
+    for (x = [-1.3, 0, 1.3]) {
+      for (y = [0, 1.3]) {
+        translate([x * mm(120),
+                   exterior_height - inch(2) - mm(60) - y * mm(120)])
+          fan_120mm_template();
+      }
+    }
+  }
+}
+
+module mock_fan_panel_120mm() {
+  color([0, 0, 1, 0.5])
+  linear_extrude(height = plastic_thickness, convexity = 10, center = true)
+    fan_panel_120mm();
+}
+
+
+/*******************************************************************************
  * Reservoir!
  */
 
