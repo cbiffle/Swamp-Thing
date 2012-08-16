@@ -564,28 +564,38 @@ module mock_pad_assembly() {
   }
 }
 
-module mock_box() {
+module mock_fan_assembly() {
+  for (x = fan_panel_offsets) {
+    translate([0, x, 0]) rotate([90, 0, 0]) mock_fan_panel_4in();
+  }
+}
+
+module mock_side_panels() {
   longitudinal_panel_offset = exterior_width/2 - hook_margin - wood_thickness/2;
-  lateral_panel_offset = exterior_depth/2 - hook_margin - wood_thickness/2;
-
-  mock_braces();
-
   for (x = [-1, 1]) {
     translate([x * longitudinal_panel_offset, 0])
       rotate([90, 0, 90]) mock_longitudinal_panel();
   }
+}
 
+module mock_lat_panels() {
+  lateral_panel_offset = exterior_depth/2 - hook_margin - wood_thickness/2;
   translate([0, -lateral_panel_offset])
     rotate([90, 0, 0]) mock_front_panel();
   translate([0, lateral_panel_offset])
     rotate([90, 0, 0]) mock_rear_panel();
+}
+
+module mock_box() {
+  mock_braces();
+
+  mock_side_panels();
+  mock_lat_panels();
 
   translate([0, 0, brace_height + plastic_thickness]) mock_reservoir();
 
   mock_pad_assembly();
-  for (x = fan_panel_offsets) {
-    translate([0, x, 0]) rotate([90, 0, 0]) mock_fan_panel_4in();
-  }
+  mock_fan_assembly();
 
   translate([0,
              fan_panel_offsets[0] - plastic_thickness / 2,
