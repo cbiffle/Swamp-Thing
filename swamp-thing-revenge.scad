@@ -144,7 +144,7 @@ module mock_lateral_brace() {
  */
 
 pad_hanger_offsets = [
-  -interior_depth/2 + plastic_thickness + plastic_thickness/2,
+  -interior_depth/2 + plastic_thickness,
   -interior_depth/2 + plastic_thickness + plastic_thickness + pad_thickness
 ];
 
@@ -430,13 +430,15 @@ module mock_reservoir_lateral_panel() {
 
 module mock_reservoir() {
   mock_reservoir_floor();
-  for (x = [-1, 1]) {
-    translate([x * (interior_width/2 - plastic_thickness/2), 0, 0])
-      rotate([90, 0, 90]) mock_reservoir_longitudinal_panel();
-  }
-  for (y = [-1, 1]) {
-    translate([0, y * (interior_depth/2 - plastic_thickness/2), 0])
-      rotate([90, 0, 0]) mock_reservoir_lateral_panel();
+  translate([0, 0, plastic_thickness/2]) {
+    for (x = [-1, 1]) {
+      translate([x * (interior_width/2 - plastic_thickness/2), 0, 0])
+        rotate([90, 0, 90]) mock_reservoir_longitudinal_panel();
+    }
+    for (y = [-1, 1]) {
+      translate([0, y * (interior_depth/2 - plastic_thickness/2), 0])
+        rotate([90, 0, 0]) mock_reservoir_lateral_panel();
+    }
   }
 }
 
