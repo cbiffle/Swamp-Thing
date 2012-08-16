@@ -191,7 +191,7 @@ module mock_longitudinal_panel() {
 /*******************************************************************************
  * Lateral (front/rear) panels
  *
- * These are hang panels.  The end panels are different.
+ * These are hang panels.  The end panels are different; they look like:
  *
  * +-------------------------+
  * | +-+                 +-+ |
@@ -201,6 +201,18 @@ module mock_longitudinal_panel() {
  *     | +-+         +-+ |    
  *     | | |         | | |    
  *     +-+ +---------+ +-+    
+ *
+ * The interior hang panels look like:
+ *
+ * +-------------------------+
+ * | +-+                 +-+ |
+ * | | |                 | | |
+ * +-+ |                 | +-+
+ *     |                 |    
+ *     +-+             +-+    
+ *       |      O      | <-- to clear reservoir
+ *       +-------------+      
+ *              ^-- for water leveling between compartments.
  */
 
 module lateral_panel() {
@@ -237,20 +249,51 @@ module interior_lateral_panel() {
   }
 }
 
+pad_opening_width = pad_width - 2 * pad_margin - 2 * soak_pipe_clearance;
+pad_opening_height = pad_height - 2 * pad_margin;
+
+pad_opening_top = interior_height - soak_pipe_clearance;
+
 module pad_opening_template() {
-  pad_opening_width = pad_width - 2 * pad_margin;
-  pad_opening_height = pad_height - 2 * pad_margin;
-
-  pad_opening_top = interior_height - soak_pipe_clearance;
-
   translate([-pad_opening_width / 2, pad_opening_top - pad_opening_height])
       square([pad_opening_width, pad_opening_height]);
 }
+
+pad_spacer_width = inch(2);
+zip_slot_height = mm(3);
+zip_slot_width = mm(5);
+
+module pad_spacer_template() {
+  // Tab slot
+  square([pad_spacer_width * 2 / 3, plastic_thickness], center = true);
+  // Zip-tie holes
+  for (y = [-1, 1]) {
+    translate([0, y * (plastic_thickness * 3 / 2 + zip_slot_height / 2)])
+      square([zip_slot_width, zip_slot_height], center = true);
+  }
+}
+
+module pad_spacer() {
+  square([pad_thickness, pad_spacer_width], center = true);
+  for (x = [-1, 1]) {
+    translate([x * (pad_thickness/2 + plastic_thickness/2), 0])
+      square([plastic_thickness, pad_spacer_width * 2 / 3], center = true);
+  }
+}
+
+pad_spacer_elevation = pad_opening_top + pad_margin - pad_height
+                     - (pad_spacer_width / 2);
 
 module pad_hanger() {
   difference() {
     interior_lateral_panel();
     pad_opening_template();
+    
+    for (x = [-1, 1]) {
+      translate([x * pad_opening_width/6,
+                 pad_spacer_elevation])
+        rotate(90) pad_spacer_template();
+    }
   }
 }
 
@@ -274,6 +317,12 @@ module mock_pad_hanger() {
   color([0, 0, 1, 0.5])
   linear_extrude(height = plastic_thickness, convexity = 10, center = true)
     pad_hanger(); 
+}
+
+module mock_pad_spacer() {
+  color([0, 0, 1, 0.5])
+  linear_extrude(height = plastic_thickness, convexity = 10, center = true)
+    pad_spacer(); 
 }
 
 module mock_front_panel() {
@@ -499,6 +548,20 @@ module mock_braces() {
   }
 }
 
+module mock_pad_assembly() {
+  for (x = pad_hanger_offsets) {
+    translate([0, x, 0]) rotate([90, 0, 0]) mock_pad_hanger();
+  }
+
+  for (x = [-1, 1]) {
+    translate([x * (pad_opening_width / 6),
+               (pad_hanger_offsets[0] + pad_hanger_offsets[1]) / 2,
+               pad_spacer_elevation])
+      rotate([90, 0, 90])
+      mock_pad_spacer();
+  }
+}
+
 module mock_box() {
   longitudinal_panel_offset = exterior_width/2 - hook_margin - wood_thickness/2;
   lateral_panel_offset = exterior_depth/2 - hook_margin - wood_thickness/2;
@@ -517,9 +580,7 @@ module mock_box() {
 
   translate([0, 0, brace_height + plastic_thickness]) mock_reservoir();
 
-  for (x = pad_hanger_offsets) {
-    translate([0, x, 0]) rotate([90, 0, 0]) mock_pad_hanger();
-  }
+  mock_pad_assembly();
   for (x = fan_panel_offsets) {
     translate([0, x, 0]) rotate([90, 0, 0]) mock_fan_panel_4in();
   }
