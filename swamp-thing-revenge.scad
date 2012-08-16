@@ -12,37 +12,62 @@ function inch(n) = mm(25.4 * n);
  */
 
 /*
+ * Materials characteristics.
+ */
+wood_thickness = mm(5.2);
+plastic_thickness = inch(0.125);
+
+// How much material on outside of hooks, for strength?
+hook_margin = wood_thickness * 2;
+
+/*
+ * Material size restrictions.
+ */
+exterior_height = inch(23);
+exterior_width = inch(23);
+exterior_depth = inch(23);
+
+/*
  * Height of cross-bracing beneath reservoir floor.  Taller braces are stronger.
  * However, brace height is deducted from maximum system height!
  */
 brace_height = inch(1);
 
-wood_thickness = inch(0.25);
-plastic_thickness = inch(0.125);
-
+/*
+ * Depth of water (at maximum).
+ */
 reservoir_depth = inch(6);
 
-hook_margin = wood_thickness * 2;
+/*
+ * Characteristics of pad.
+ */
+pad_thickness = inch(6);
+pad_height = inch(12);
+pad_margin = inch(1);
 
-exterior_height = inch(23);
-exterior_width = inch(23);
-exterior_depth = inch(23);
+/*
+ * Spacing for soak pipe
+ */
+soak_pipe_clearance = inch(2);
 
+/*
+ * Spacing between fan panels.
+ */
+fan_spacing = inch(3);
+
+/*
+ * Diameter of rear duct.
+ */
+duct_diameter = inch(4);
+
+/*
+ * Interior size (computed).
+ */
 interior_width = exterior_width - 2 * (hook_margin + wood_thickness);
 interior_depth = exterior_depth - 2 * (hook_margin + wood_thickness);
 interior_height = exterior_height - brace_height;
 
-pad_thickness = inch(6);
 pad_width = interior_width;
-pad_height = inch(12);
-pad_margin = inch(1);
-
-soak_pipe_clearance = inch(2);
-
-fan_spacing = inch(3);
-
-duct_diameter = inch(4);
-
 
 /*******************************************************************************
  * Braces
@@ -245,25 +270,10 @@ module rear_panel() {
   }
 }
 
-module fan_panel_4in() {
-  difference() {
-    interior_lateral_panel();
-
-    translate([0, exterior_height - inch(4)])
-        circle(r = inch(2));
-  }
-}
-
 module mock_pad_hanger() {
   color([0, 0, 1, 0.5])
   linear_extrude(height = plastic_thickness, convexity = 10, center = true)
     pad_hanger(); 
-}
-
-module mock_fan_panel_4in() {
-  color([0, 0, 1, 0.5])
-  linear_extrude(height = plastic_thickness, convexity = 10, center = true)
-    fan_panel_4in();
 }
 
 module mock_front_panel() {
@@ -275,6 +285,29 @@ module mock_rear_panel() {
   linear_extrude(height = wood_thickness, convexity = 10, center = true)
     rear_panel(); 
 }
+
+
+/*******************************************************************************
+ * 4-inch ducted fan configuration
+ *
+ * This is designed around the RoadPro RPSC-857 fan.
+ */
+
+module fan_panel_4in() {
+  difference() {
+    interior_lateral_panel();
+
+    translate([0, exterior_height - inch(4)])
+        circle(r = inch(2));
+  }
+}
+
+module mock_fan_panel_4in() {
+  color([0, 0, 1, 0.5])
+  linear_extrude(height = plastic_thickness, convexity = 10, center = true)
+    fan_panel_4in();
+}
+
 
 /*******************************************************************************
  * Reservoir!
