@@ -11,7 +11,8 @@ to reflect your evaporative pad.
 
 The default design is set up for a 4" ducted fan and a 4" output duct.
 To change duct size, edit the `duct_diameter` parameter.  To use a different
-fan, customize the `fan_panel_4in` modules to reflect your fan.
+fan, replace references to the `fan_panel_4in` modules with your own; there's
+an example in the file for using an array of 120mm computer fans instead.
 
 
 Assembly Instructions
