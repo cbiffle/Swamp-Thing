@@ -40,10 +40,11 @@ To assemble:
  6. Drop the reservoir floor into place.  It should nest quite snugly.
  7. Fit the reservoir walls in.  They should hold in place by friction.
  8. Seal all reservoir seams using silicone sealant.  Allow this to cure.
- 9. Mount your pad to the pad hangers, using e.g. zip ties.  These are the
-    plastic pieces that look like the front panel.
+ 9. Assemble the pad hanger panels and the pad spacers.  Use zip ties through
+    the holes next to the panels to hold the spacers in place --- not too
+    tight!
  10. Slot the pad assembly into place.  It mates with slots on top of the side
-     panels.  Seal the bottom seams if desired.
+     panels.  Seal the bottom seams if desired.  Load the pad.
  11. Mount your fan to the fan supports.  If using the default 4" ducted fan,
      it should fit by friction.  Put a hose clamp between the two supports to
      keep it from sliding out.
