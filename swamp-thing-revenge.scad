@@ -218,14 +218,22 @@ module mock_longitudinal_panel() {
 module lateral_panel() {
   width = exterior_width - 2 * (hook_margin + wood_thickness);
 
-  translate([-width/2, 0]) square([width, exterior_height]);
+  difference() {
+    union() {
+      translate([-width/2, 0]) square([width, exterior_height]);
 
-  for (s = [-1, 1]) scale([s, 1]) {
-    translate([width/2, exterior_height - hook_margin])
-      square([wood_thickness, hook_margin]);
-    translate([width/2 + wood_thickness, exterior_height - hook_margin * 2])
-      square([hook_margin, hook_margin * 2]);
+      for (s = [-1, 1]) scale([s, 1]) {
+        translate([width/2, exterior_height - hook_margin])
+          square([wood_thickness, hook_margin]);
+        translate([width/2 + wood_thickness, exterior_height - hook_margin * 2])
+          square([hook_margin, hook_margin * 2]);
+      }
+    }
 
+    for (x = longitudinal_brace_positions) {
+      translate([x - wood_thickness/2, 0])
+          square([wood_thickness, hook_margin]);
+    }
   }
 }
 
