@@ -252,8 +252,14 @@ module interior_lateral_panel() {
       }
     }
 
+    for (x = [-1, 1]) {
+      translate([x * (width / 2 - plastic_thickness), brace_height + plastic_thickness])
+          circle(r = inch(0.4));
+    }
+
     translate([0, brace_height + 3*plastic_thickness + inch(0.5)])
       circle(r = inch(0.5));
+
   }
 }
 
