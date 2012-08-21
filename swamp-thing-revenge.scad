@@ -162,8 +162,8 @@ module mock_lateral_brace() {
  */
 
 pad_hanger_offsets = [
-  -interior_depth/2 + plastic_thickness,
-  -interior_depth/2 + plastic_thickness + plastic_thickness + pad_thickness
+  -interior_depth/2 + plastic_thickness + mm(10),
+  -interior_depth/2 + plastic_thickness + mm(10) + plastic_thickness + pad_thickness
 ];
 
 fan_panel_offsets = [
