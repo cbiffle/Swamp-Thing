@@ -152,6 +152,10 @@ module mock_lateral_brace() {
  * |                            |
  * |                            |
  * | +-+                    +-+ |
+ * | | | <- hook  cutout -> | | |
+ * | +-+                    +-+ |
+ * |                            |
+ * | +-+                    +-+ |
  * | | | <- brace cutout -> | | |
  * | +-+                    +-+ |
  * +--------------*-------------+
@@ -180,11 +184,17 @@ module longitudinal_panel() {
 
     // Hang hook cutouts
     for (x = [-1, 1]) {
-      // Top hook
       translate([x * (exterior_depth/2 - hook_margin - wood_thickness/2),
-                 exterior_height - hook_margin])
+                 exterior_height/2 - hook_margin]) {
+      // Mid hook.
         translate([-wood_thickness/2, 0])
-          square([wood_thickness, hook_margin]);
+          square([wood_thickness, hook_margin * 2]);
+
+      // Top hook
+        translate([-wood_thickness/2, exterior_height/2])
+          square([wood_thickness, hook_margin * 2]);
+          
+      }
     }
 
     for (x = pad_hanger_offsets) {
@@ -216,6 +226,10 @@ module mock_longitudinal_panel() {
  * | | |                 | | |
  * +-+ |                 | +-+
  *     |                 |    
+ * +---+                 +---+
+ * | +-+                 +-+ |
+ * | | |                 | | |
+ * +-+ |                 | +-+
  *     | +-+         +-+ |    
  *     | | |         | | |    
  *     +-+ +---------+ +-+    
@@ -251,6 +265,21 @@ module lateral_panel() {
     for (x = longitudinal_brace_positions) {
       translate([x - wood_thickness/2, 0])
           square([wood_thickness, brace_height - hook_margin]);
+    }
+  }
+}
+
+module exterior_lateral_panel() {
+  width = exterior_width - 2 * (hook_margin + wood_thickness);
+
+  union() {
+    lateral_panel();
+
+    for (s = [-1, 1]) scale([s, 1]) {
+      translate([width/2, exterior_height/2 - hook_margin])
+        square([wood_thickness, hook_margin]);
+      translate([width/2 + wood_thickness, exterior_height/2 - hook_margin * 2])
+        square([hook_margin, hook_margin * 2]);
     }
   }
 }
@@ -331,14 +360,14 @@ module pad_hanger() {
 
 module front_panel() {
   difference() {
-    lateral_panel();
+    exterior_lateral_panel();
     pad_opening_template();
   }
 }
 
 module rear_panel() {
   difference() {
-    lateral_panel();
+    exterior_lateral_panel();
 
     translate([0, exterior_height - inch(2) - duct_diameter/2])
         circle(r = duct_diameter / 2);
