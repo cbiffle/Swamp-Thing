@@ -90,15 +90,18 @@ module brace(length, cutout_centers) {
   center = length / 2;
 
   translate([-length/2, 0]) difference() {
+    // Brace body.
     square([length, brace_height]);
 
+    // End hooks.
     for (x = [hook_margin, length - hook_margin - wood_thickness]) {
-      translate([x, 0]) square([wood_thickness, brace_height - hook_margin]);
+      translate([x, 0]) square([wood_thickness, hook_margin]);
     }
 
+    // Cutouts.
     for (x = cutout_centers) {
-      translate([center + x - wood_thickness / 2, hook_margin]) {
-        square([wood_thickness, brace_height - hook_margin]);
+      translate([center + x - wood_thickness / 2, brace_height/2]) {
+        square([wood_thickness, brace_height/2]);
       }
     }
   }
@@ -158,17 +161,21 @@ module longitudinal_panel() {
     translate([-exterior_depth / 2, 0])
         square([exterior_depth, exterior_height]);
     
+    // Brace cutouts
     for (x = lateral_brace_positions) {
       translate([x - wood_thickness/2, hook_margin])
           square([wood_thickness, brace_height]);
     }
 
+    // Hang hook cutouts
     for (x = [-1, 1]) {
+      // Top hook
       translate([x * (exterior_depth/2 - hook_margin - wood_thickness/2),
                  exterior_height - hook_margin])
         translate([-wood_thickness/2, 0])
           square([wood_thickness, hook_margin]);
     }
+
     for (x = pad_hanger_offsets) {
       translate([x, exterior_height - hook_margin])
         translate([-plastic_thickness/2, 0])
@@ -232,7 +239,7 @@ module lateral_panel() {
 
     for (x = longitudinal_brace_positions) {
       translate([x - wood_thickness/2, 0])
-          square([wood_thickness, hook_margin]);
+          square([wood_thickness, brace_height - hook_margin]);
     }
   }
 }
