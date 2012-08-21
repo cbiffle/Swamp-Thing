@@ -146,7 +146,9 @@ module mock_lateral_brace() {
  *
  * The panels look roughly like this (not to scale):
  *
- * +-+ +--+ +------+ +----------+
+ *                       +----+
+ *                       +--+ |   <-- lid hook
+ * +-+ +--+ +------+ +------+ +-+
  * | | |  | |      | |          | <-- hang panel cutouts
  * | +-+  +-+      +-+          |
  * |                            |
@@ -171,10 +173,26 @@ fan_panel_offsets = [
   interior_depth / 6 + fan_spacing/2,
 ];
 
+longitudinal_lid_hook_offsets = [
+  (interior_depth/2 + fan_panel_offsets[1]) / 2,
+  (fan_panel_offsets[0] + fan_panel_offsets[1]) / 2,
+];
+
 module longitudinal_panel() {
   difference() {
-    translate([-exterior_depth / 2, 0])
-        square([exterior_depth, exterior_height]);
+    union() {
+      translate([-exterior_depth / 2, 0])
+          square([exterior_depth, exterior_height]);
+
+      for (x = longitudinal_lid_hook_offsets) {
+        translate([x, exterior_height]) {
+          square([hook_margin, wood_thickness]);
+
+          translate([-hook_margin, wood_thickness])
+              square([hook_margin * 2, hook_margin]);
+        }
+      }
+    }
     
     // Brace cutouts
     for (x = lateral_brace_positions) {
@@ -367,7 +385,15 @@ module front_panel() {
 
 module rear_panel() {
   difference() {
-    exterior_lateral_panel();
+    union() {
+      exterior_lateral_panel();
+      for (s = [-1, 1]) scale([s, 1]) {
+        translate([0, exterior_height]) {
+          square([hook_margin, wood_thickness]);
+          translate([0, wood_thickness]) square([hook_margin * 2, hook_margin]);
+        }
+      }
+    }
 
     translate([0, exterior_height - inch(2) - duct_diameter/2])
         circle(r = duct_diameter / 2);
@@ -514,8 +540,28 @@ rear_lid_depth = exterior_depth / 2
                - fan_panel_offsets[0]
                + plastic_thickness/2;
 module rear_lid() {
-  translate([-exterior_width/2, 0])
-    square([exterior_width, rear_lid_depth]);
+  y0 = -fan_panel_offsets[0] + plastic_thickness/2;
+
+  difference() {
+    translate([-exterior_width/2, 0])
+      square([exterior_width, rear_lid_depth]);
+
+    for (s = [-1, 1]) scale([s, 1]) {
+      // Side lid hook holes
+      for (y = longitudinal_lid_hook_offsets) {
+        translate([exterior_width / 2 - hook_margin - wood_thickness, y0 + y])
+            square([wood_thickness, hook_margin * 2]);
+      }
+
+      // Rear lid hook hole
+      translate([0, rear_lid_depth - hook_margin - wood_thickness]) {
+        square([hook_margin, wood_thickness + hook_margin]);
+
+        translate([0, hook_margin]) square([2*hook_margin, wood_thickness]);
+      }
+    }
+
+  }
 }
 
 module front_lid() {
