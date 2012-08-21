@@ -107,8 +107,19 @@ module brace(length, cutout_centers) {
   }
 }
 
-lateral_brace_positions = [ -exterior_depth / 6, exterior_depth / 6];
-longitudinal_brace_positions = [ -exterior_depth / 6, exterior_depth / 6];
+lateral_brace_positions = [
+    -exterior_depth / 2 + hook_margin + wood_thickness * 1.5 + hook_margin,
+    -exterior_depth / 6,
+    exterior_depth / 6,
+    exterior_depth / 2 - hook_margin - wood_thickness * 1.5 - hook_margin,
+];
+
+longitudinal_brace_positions = [
+    -exterior_depth / 2 + hook_margin + wood_thickness * 1.5 + hook_margin,
+    -exterior_depth / 6,
+    exterior_depth / 6,
+    exterior_depth / 2 - hook_margin - wood_thickness * 1.5 - hook_margin,
+];
 
 module longitudinal_brace() {
   translate([0, brace_height]) scale([1, -1])
@@ -501,24 +512,29 @@ module mock_front_lid() {
 margin = inch(1);
 
 module wood_cutting_layout() {
-  longitudinal_panel();
-  translate([0, -brace_height - margin])
-    longitudinal_brace();
-
-  translate([-exterior_depth - margin, 0]) {
+  for (x = [0, -exterior_depth - margin]) translate([x, 0]) {
     longitudinal_panel();
-    translate([0, -brace_height - margin])
+    translate([0, -brace_height - margin]) {
       longitudinal_brace();
+      translate([0, -brace_height - margin])
+        longitudinal_brace();
+    }
   }
   
   translate([0, exterior_height + margin]) {
     front_panel();
-    translate([0, exterior_height + margin]) lateral_brace();
-  }
+    translate([-exterior_depth - margin, 0]) rear_panel();
 
-  translate([-exterior_depth - margin, exterior_height + margin]) {
-    rear_panel();
-    translate([0, exterior_height + margin]) lateral_brace();
+    for (x = [0, -exterior_height - margin]) {
+      translate([x, exterior_height + margin]) {
+        lateral_brace();
+        translate([0, brace_height + margin]) lateral_brace();
+      }
+    }
+
+    translate([-exterior_depth - margin, 0]) {
+      rear_panel();
+    }
   }
 }
 
@@ -564,7 +580,7 @@ module mock_braces() {
   for (x = longitudinal_brace_positions) {
     translate([x, 0, 0]) rotate([90, 0, 90]) mock_longitudinal_brace();
   }
-  for (y = longitudinal_brace_positions) {
+  for (y = lateral_brace_positions) {
     translate([0, y, 0])
       rotate([0, 0, 90])
       rotate([90, 0, 90]) mock_lateral_brace();
